@@ -3,6 +3,7 @@ package com.kryzano.done
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +19,8 @@ class Auth(private val mainViewModel: MainViewModel) {
             Log.d("Auth","onSignInResultGood: sending email verification")
             fuser.sendEmailVerification()
             AuthUI.getInstance().signOut(context)
+            Toast.makeText(context, "Email is not Verified, Sending Verification Email",
+                Toast.LENGTH_LONG).show()
             this.initAuth()
         }
         else {

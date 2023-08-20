@@ -14,6 +14,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 import com.kryzano.done.Auth
+import com.kryzano.done.Database
 import com.kryzano.done.MainViewModel
 import com.kryzano.done.User
 
@@ -82,7 +83,11 @@ class FriendsFragment : Fragment() {
             Auth(mainViewModel).onSignInResultGood(requireActivity())
         } else {
             Log.d("Auth","Failed: ${result.resultCode}")
+            val oldUid = FirebaseAuth.getInstance().currentUser?.uid
             FirebaseAuth.getInstance().currentUser?.delete()
+            if (oldUid != null){
+                Database().removeUser(oldUid)
+            }
             Auth(mainViewModel).checkAuth(signInLauncher)
             // failed
         }
