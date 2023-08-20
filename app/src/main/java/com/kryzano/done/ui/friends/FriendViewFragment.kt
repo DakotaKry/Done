@@ -29,7 +29,6 @@ class FriendViewFragment : Fragment() {
     private val db = Database()
     private lateinit var mainViewModel: MainViewModel
     private lateinit var friendView: String
-    private lateinit var friendQuitList: ArrayList<Quit>
     private lateinit var adapter: FriendsQuitRecyclerViewAdapter
     private lateinit var user: User
 
@@ -50,10 +49,20 @@ class FriendViewFragment : Fragment() {
         }
 
         _binding = FragmentViewFriendBinding.inflate(inflater, container, false)
+        val root = binding.root
        // val root: View = binding.root
 
-        friendQuitList = db.getQuits(friendView)
+        val uid = db.getUidFromEmail(friendView)
+        val friendQuitList = db.getQuits(uid)
+        Log.d("FriendViewFragment","$friendQuitList")
+
         user = mainViewModel.getUser()
+
+        Log.d("FriendViewFragment","$friendQuitList")
+        Log.d("FriendViewFragment","$friendView")
+
+        binding.friendTitleText.text = db.getUsernameFromEmail(friendView)
+
 
         // Recycler View Code //
         val recyclerView = binding.recyclerviewFriendsQuit
@@ -66,7 +75,7 @@ class FriendViewFragment : Fragment() {
 
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_view_friend, container, false)
+        return root
 
     }
 
