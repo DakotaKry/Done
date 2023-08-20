@@ -1,5 +1,6 @@
 package com.kryzano.done
 import android.util.Log
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
@@ -53,8 +54,28 @@ class Database {
         }
 
 
+    }
+
+    fun getUsername(email: String): String{
+
+        var username = ""
+
+        try {
+
+            val docRef = fdb.collection("users").document("/$email")
+            val task = docRef.get()
+            while (!task.isComplete){
+                Thread.sleep(100)
+            }
+            val result = task.result
+            username = result.data!!["username"] as String
+
+        } catch (exception: Exception) {
+            Log.e("Database", exception.toString())
+        }
 
 
+        return username
 
     }
 
