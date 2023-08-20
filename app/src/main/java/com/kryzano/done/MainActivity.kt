@@ -45,10 +45,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.d("Main","Activity start")
+
         // Must Be Ran First AND In Order //
 
         // TODO: Remove testing line below
-        if (this.fuser != null){ FirebaseAuth.getInstance().signOut()} // Makes sure we are signed out for testing
+        //if (this.fuser != null){ FirebaseAuth.getInstance().signOut()} // Makes sure we are signed out for testing
 
         // Sets up mainViewModel
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
@@ -57,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         auth = Auth(mainViewModel)
         auth.initAuth() // Logs in user or signs in anon. Returns a User class
         user = mainViewModel.getUser()
+        user.initialize()
 
         // binding must be called after user in MainViewModel has been initialized!!
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -88,14 +91,14 @@ class MainActivity : AppCompatActivity() {
 
 
         // Database testing TODO: Remove
-        user.addQuit(Quit("testQuit", Calendar.getInstance()))
-        val cal = Calendar.getInstance()
-        cal.set(2023,6,23, 0, 0, 0)
-        user.addQuit(Quit("Weed", cal))
-        val quitList = user.getQuitList()
-        Log.d("Test","Test Quit: $quitList")
-        val username = user.getUsername()
-        Log.d("Test","Test Username: $username")
+        //user.addQuit(Quit("testQuit", Calendar.getInstance()))
+        //val cal = Calendar.getInstance()
+        //cal.set(2023,6,23, 0, 0, 0)
+        //user.addQuit(Quit("Weed", cal))
+        //val quitList = user.getQuitList()
+        //Log.d("Test","Test Quit: $quitList")
+        //val username = user.getUsername()
+        //Log.d("Test","Test Username: $username")
         //Log.d("Test", "Test UID: ${fuser!!.uid}")
 
 
