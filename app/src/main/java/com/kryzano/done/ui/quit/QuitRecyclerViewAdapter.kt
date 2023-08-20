@@ -1,5 +1,6 @@
 package com.kryzano.done.ui.quit
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.util.Log
 import android.view.Gravity
@@ -8,15 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.kryzano.done.Quit
 import com.example.done.R
+import com.kryzano.done.MainActivity
+import com.kryzano.done.MainViewModel
 import com.kryzano.done.User
 import java.lang.IndexOutOfBoundsException
 import java.util.Calendar
 
 class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val user: User):
     RecyclerView.Adapter<QuitRecyclerViewAdapter.ViewHolder>(){
+
+    private lateinit var mainViewModel: MainViewModel
 
 
 
@@ -112,6 +118,7 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
      * Args: viewHolder: ViewHolder, position: Int
      * Return: Boolean
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun handlePopupMenu(viewHolder: ViewHolder, position: Int): Boolean {
         // creates the popup menu
         val popup = PopupMenu(viewHolder.itemView.context, viewHolder.itemView)
@@ -136,7 +143,6 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
                         user.removeQuit(itemToRemove)
                         this.notifyItemRemoved(position)
                         this.notifyItemRangeChanged(position, user.getQuitList().size - position)
-                        this.notifyDataSetChanged()
 
                         dialog.dismiss()
                     }
@@ -172,7 +178,19 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
                 }
 
                 R.id.quit_drawer_edit -> {
-                    //TODO: Implement an edit feature, or remove button. Could reuse the AddQuitFragment
+
+                    val context = (viewHolder.itemView.context as MainActivity)
+                    mainViewModel = ViewModelProvider(context)[MainViewModel::class.java]
+                    mainViewModel.setQuitEdit(user.getQuitList()[position])
+                    // Show Add Quit popup fragment
+                    AddQuitFragment().show(context.supportFragmentManager, null)
+                    // Item may have been deleted and it may not have
+                    this.notifyDataSetChanged()
+                    // Need to notify data set change in case they added a new quit
+
+
+
+
                 }
 
             }

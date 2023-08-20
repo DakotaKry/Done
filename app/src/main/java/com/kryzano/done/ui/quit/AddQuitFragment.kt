@@ -29,10 +29,15 @@ class AddQuitFragment : DialogFragment(){
     private var _binding: FragmentAddQuitBinding? = null
     private lateinit var mainViewModel: MainViewModel
     private lateinit var user: User
+    private var quitEdit: Quit? = null
+    private var editingQuit = false
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+
 
 
     override fun onCreateView(
@@ -44,6 +49,11 @@ class AddQuitFragment : DialogFragment(){
         // mainViewModel for communicating with MainActivity
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         user = mainViewModel.getUser()
+        quitEdit = mainViewModel.getQuitEdit()
+
+        if (quitEdit != null){
+            this.editingQuit = true
+        }
 
 
         // Inflate the layout for this fragment
@@ -61,7 +71,33 @@ class AddQuitFragment : DialogFragment(){
         val startTimeText: TextView = binding.newQuitStartTimeText
 
         // This will be the Calendar used to construct the newQuit
-        val startCalendar: Calendar = Calendar.getInstance()
+        var startCalendar: Calendar = Calendar.getInstance()
+
+        // If we are actually editing a quit, we want to populate old quit data
+        if (editingQuit){
+
+            // Gets Calendar info
+            val prevCalendar = quitEdit!!.getCalendar()
+            val prevYear = prevCalendar.get(Calendar.YEAR)
+            val prevMonth = prevCalendar.get(Calendar.MONTH)
+            val prevDay = prevCalendar.get(Calendar.DAY_OF_MONTH)
+            val prevHour = prevCalendar.get(Calendar.HOUR_OF_DAY)
+            val prevMinute = prevCalendar.get(Calendar.MINUTE)
+            val prevStartDateText = "$prevDay/$prevMonth/$prevYear"
+            val prevStartTimeText = "$prevHour:$prevMinute"
+
+            // Sets title
+            quiteTextTitle.setText(quitEdit!!.getTitle())
+
+            // Sets Date and Time text
+            startDateText.text = prevStartDateText
+            startTimeText.text = prevStartTimeText
+
+            // Sets current calendar
+            startCalendar = prevCalendar
+        }
+
+
         // This will be the String used to construct the newQuit
 
         // sets up the Date Selector Button
@@ -72,11 +108,23 @@ class AddQuitFragment : DialogFragment(){
 
         doneBtn.setOnClickListener {
             val newQuit = Quit(quiteTextTitle.text.toString(), startCalendar)
+
+            if(editingQuit){
+                // If we are editing a quit, remove the old one
+                user.removeQuit(quitEdit!!)
+                // nullify quitEdit so we don't launch again in edit mode
+                mainViewModel.removeQuitEdit()
+            }
+
             user.addQuit(newQuit)
             this.dismiss()
         }
 
         cancelBtn.setOnClickListener {
+            if(editingQuit){
+                // nullify quitEdit so we don't launch again in edit mode
+                mainViewModel.removeQuitEdit()
+            }
             this.dismiss()
         }
 
