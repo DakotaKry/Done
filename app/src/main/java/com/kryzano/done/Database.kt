@@ -69,19 +69,46 @@ class Database {
         var username = ""
 
         try {
-
             val docRef = fdb.collection("users").document("/$uid")
             val task = docRef.get()
+
             while (!task.isComplete){
                 Thread.sleep(100)
             }
             val result = task.result
+
             username = result.data!!["username"] as String
 
         } catch (exception: Exception) {
             Log.e("Database", exception.toString())
         }
 
+        Log.d("DatabaseFetch","returned: $username")
+        return username
+
+    }
+
+    fun getUsernameFromEmail(email: String): String{
+
+        var username = ""
+
+        try {
+
+            val query = fdb.collection("users").whereEqualTo("email", email)
+            val task = query.get()
+
+            while (!task.isComplete){
+                Thread.sleep(10)
+            }
+
+            val result2 = task.result
+
+            username = result2.documents[0].data!!["username"] as String
+
+
+        } catch (exception: Exception) {
+            Log.e("Database", exception.toString())
+        }
 
         return username
 
