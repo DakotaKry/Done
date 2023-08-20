@@ -13,8 +13,12 @@ import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.done.databinding.FragmentAddQuitBinding
 import com.google.android.material.textfield.TextInputEditText
+import com.kryzano.done.MainViewModel
+import com.kryzano.done.Quit
+import com.kryzano.done.User
 import java.util.Calendar
 
 
@@ -26,6 +30,8 @@ import java.util.Calendar
 class AddQuitFragment : DialogFragment(){
 
     private var _binding: FragmentAddQuitBinding? = null
+    private lateinit var mainViewModel: MainViewModel
+    private lateinit var user: User
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -37,6 +43,12 @@ class AddQuitFragment : DialogFragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        // mainViewModel for communicating with MainActivity
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        user = mainViewModel.getUser()
+
+
         // Inflate the layout for this fragment
 
         _binding = FragmentAddQuitBinding.inflate(inflater, container, false)
@@ -54,7 +66,7 @@ class AddQuitFragment : DialogFragment(){
         // This will be the Calendar used to construct the newQuit
         var startCalendar: Calendar = Calendar.getInstance()
         // This will be the String used to construct the newQuit
-        var quitTitle: String = "Untitled"
+        //var quitTitle: String = "Untitled"
 
 
         // sets up the Date Selector Button
@@ -62,6 +74,18 @@ class AddQuitFragment : DialogFragment(){
 
         // sets up the Time Selector Button
         setTimeBtn(timeBtn, startTimeText, startCalendar)
+
+        doneBtn.setOnClickListener {
+            val newQuit = Quit(quiteTextTitle.text.toString(), startCalendar)
+            user.addQuit(newQuit)
+            this.dismiss()
+        }
+
+        cancelBtn.setOnClickListener {
+            this.dismiss()
+        }
+
+
 
 
 

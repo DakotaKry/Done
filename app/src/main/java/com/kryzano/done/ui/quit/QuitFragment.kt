@@ -48,7 +48,7 @@ class QuitFragment : Fragment(){
     ): View {
 
         // mainViewModel for communicating with MainActivity
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
 
         /**
@@ -92,6 +92,8 @@ class QuitFragment : Fragment(){
 
             // Show Add Quit popup fragment
             AddQuitFragment().show(childFragmentManager,null)
+            adapter.notifyDataSetChanged() // Need to notify data set change in case they added a new quit
+            // Live data might be more effective at this
 
             //val addQuitFragment: DialogFragment = AddQuitFragment()
             //childFragmentManager.beginTransaction().apply {
