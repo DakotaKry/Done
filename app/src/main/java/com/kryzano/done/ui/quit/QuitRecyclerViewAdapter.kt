@@ -1,26 +1,19 @@
 package com.kryzano.done.ui.quit
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.kryzano.done.Quit
 import com.example.done.R
-import com.kryzano.done.MainViewModel
 import com.kryzano.done.User
-import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
-import java.time.Year
 import java.util.Calendar
-import kotlin.concurrent.thread
 
 class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val user: User):
     RecyclerView.Adapter<QuitRecyclerViewAdapter.ViewHolder>(){
@@ -86,13 +79,13 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
          * Returns: None
          */
         fun updateTimerText(){
-            viewHolder.timerTextView.postDelayed(Runnable {
+            viewHolder.timerTextView.postDelayed({
 
                 try {
 
                     val quitStartTime = quitList[position].getCalendar()
                     val elapsed = timeElapsed(quitStartTime) // Array of time elapsed
-                    var elapsedText = getDisplayFormat(elapsed)
+                    val elapsedText = getDisplayFormat(elapsed)
 
 
 
@@ -138,7 +131,7 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
                     alertBuilder.setMessage("Are you sure you want to delete?")
                     alertBuilder.setPositiveButton("Yes") { dialog, _ ->
 
-                        // Handels deleting the item from the user and recycler view
+                        // Handles deleting the item from the user and recycler view
                         val itemToRemove = user.getQuitList()[position]
                         user.removeQuit(itemToRemove)
                         this.notifyItemRemoved(position)
@@ -187,7 +180,7 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
 
             true
         }
-        popup.gravity = Gravity.RIGHT // Makes the popup menu appear on the right of the screen
+        popup.gravity = Gravity.END // Makes the popup menu appear on the right of the screen
         popup.show()
         return true // for the lambda expression
     }
@@ -199,22 +192,23 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
      * Return: String
      */
     private fun getDisplayFormat(elapsed: Array<Int>): String {
-        var elapsedText = ""
-        if ((elapsed[0] != 0)) {
-            elapsedText = ("${elapsed[0]} yrs," +
+        val elapsedText: String = if ((elapsed[0] != 0)) {
+            ("${elapsed[0]} yrs," +
                     " ${elapsed[1]} mos, ${elapsed[2]} days" +
                     " ${elapsed[3]}:${elapsed[4]}:${elapsed[5].toString().padStart(2,'0')}")
         } else if ((elapsed[1] != 0)) {
-            elapsedText = ("${elapsed[1]} mos, ${elapsed[2]} days," +
+            ("${elapsed[1]} mos, ${elapsed[2]} days," +
                     " ${elapsed[3]}:${elapsed[4]}:${elapsed[5].toString().padStart(2,'0')}")
         } else if ((elapsed[2] != 0)) {
-            elapsedText = ("${elapsed[2]} days," +
+            ("${elapsed[2]} days," +
                     " ${elapsed[3]}:${elapsed[4].toString().padStart(2, '0')}:${elapsed[5].toString().padStart(2,'0')}")
         } else if ((elapsed[3] != 0)){
-            elapsedText = ("${elapsed[3]}:${elapsed[4].toString().padStart(2, '0')}:${elapsed[5].toString().padStart(2,'0')}")
+            ("${elapsed[3]}:${elapsed[4].toString().padStart(2, '0')}:${elapsed[5].toString().padStart(2,'0')}")
         } else if ((elapsed[4] != 0)){
-            elapsedText = ("${elapsed[4]}:${elapsed[5].toString().padStart(2,'0')}")
-        } else {elapsedText = ("${elapsed[5]}")}
+            ("${elapsed[4]}:${elapsed[5].toString().padStart(2,'0')}")
+        } else {
+            ("${elapsed[5]}")
+        }
 
         return elapsedText
     }
@@ -237,24 +231,19 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val
         val sinceTime = (since.timeInMillis/1000).toInt()
         var delta:Int = currentTime - sinceTime
 
-        Log.d("UpdateTime", "Delta: $delta")
-        //Log.d("UpdateTime", "Current Time: $currentTime")
-        //Log.d("UpdateTime", "Quit Time: $sinceTime")
+        Log.v("UpdateTime", "Delta: $delta")
+
 
         var remainder:Int = delta % (365*24*60*60) // gets the remainder of seconds mod a year (365days)
-        val years:Int = (delta - remainder) / (365*24*60*60) // calcs total years (should always be whole)
+        val years:Int = (delta - remainder) / (365*24*60*60) // calculates total years (should always be whole)
         delta = remainder // updates delta
-
-        //Log.d("UpdateTime", "Year Delta: $remainder")
-        //Log.d("UpdateTime", "Year Remainder: $remainder")
-        //Log.d("UpdateTime", "Years: $years")
 
 
         // This just coverts the difference in seconds into years, months, days, hours, minutes, seconds
         // usable for formatting
 
         remainder = delta % (30*24*60*60) // gets remainder of seconds mod a month (30days)
-        val months:Int = (delta - remainder) / (30*24*60*60) // calcs total month
+        val months:Int = (delta - remainder) / (30*24*60*60) // calculates total month
         delta = remainder
 
         remainder = delta % (24*60*60)

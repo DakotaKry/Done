@@ -3,16 +3,12 @@ package com.kryzano.done
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.TimeoutException
 
-class Auth(mainViewModel: MainViewModel) {
-
-    val mainViewModel = mainViewModel
+class Auth(private val mainViewModel: MainViewModel) {
 
 
     fun onSignInResultGood(context: Context) {
@@ -57,7 +53,6 @@ class Auth(mainViewModel: MainViewModel) {
                 fuser = task.result.user
                 assert(fuser != null)
                 Log.d("Auth", "initAuth: Has fuser")
-                //Log.d("ViewModel", "User set: ${mainViewModel.getUser().getUsername()}")
 
             } catch (e: Exception){ throw e }
         }
@@ -79,7 +74,6 @@ class Auth(mainViewModel: MainViewModel) {
 
     fun checkAuth(signInLauncher: ActivityResultLauncher<Intent>){
         var fuser = FirebaseAuth.getInstance().currentUser
-        var user: User
 
         if (fuser != null) { // Debug Block
             // TODO: This block is pointless
@@ -108,8 +102,6 @@ class Auth(mainViewModel: MainViewModel) {
 
         }
 
-
-        // If fuser is anon
 
     }
 

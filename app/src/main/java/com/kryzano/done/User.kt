@@ -3,13 +3,12 @@ package com.kryzano.done
 import android.util.Log
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.auth.UserProfileChangeRequest.Builder
 import java.lang.Exception
-import javax.security.auth.callback.Callback
 
-class User(fuser: FirebaseUser) {
+class User(// Only ever used for changing display name/username
+    private var fuser: FirebaseUser
+) {
 
-    private var fuser = fuser // Only ever used for changing displayname/username
     private var uid = fuser.uid
     private val db = Database()
 
@@ -36,7 +35,7 @@ class User(fuser: FirebaseUser) {
      * Returns: None
      */
     fun initialize() {
-        Log.d("User", "initalize")
+        Log.d("User", "initialize")
 
         Log.d("Database", "Fetching for: ${this.uid}")
 
@@ -64,7 +63,7 @@ class User(fuser: FirebaseUser) {
         this.blockList = db.getBlocks(this.uid)
 
         this.quitList = db.getQuits(this.uid)
-        // Note, db.getWhatever() halts code execution. And db.fetchWhatever() provides a callback for asyn
+        // Note, db.getWhatever() halts code execution. And db.fetchWhatever() provides a callback for asynchronous execution
 
 
     }
@@ -82,7 +81,7 @@ class User(fuser: FirebaseUser) {
             db.pushUsername(this.uid, newUsername)
 
         } catch (e: Exception){
-
+            throw e
         }
 
     }

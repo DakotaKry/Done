@@ -9,9 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.DatePicker
 import android.widget.TextView
-import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.done.databinding.FragmentAddQuitBinding
@@ -24,8 +22,7 @@ import java.util.Calendar
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AddQuitFragment.newInstance] factory method to
- * create an instance of this fragment.
+ *
  */
 class AddQuitFragment : DialogFragment(){
 
@@ -55,19 +52,17 @@ class AddQuitFragment : DialogFragment(){
         val root = binding.root
 
         // All of our view attributes
-        var quiteTextTitle: TextInputEditText = binding.newQuitTitleEditText
+        val quiteTextTitle: TextInputEditText = binding.newQuitTitleEditText
         val cancelBtn: Button = binding.newQuitCancelButton
         val doneBtn: Button = binding.newQuitDoneButton
         val dateBtn: Button = binding.newQuitStartDateButton
         val timeBtn: Button = binding.newQuitStartTimeButton
-        var startDateText: TextView = binding.newQuitStartDateText
-        var startTimeText: TextView = binding.newQuitStartTimeText
+        val startDateText: TextView = binding.newQuitStartDateText
+        val startTimeText: TextView = binding.newQuitStartTimeText
 
         // This will be the Calendar used to construct the newQuit
-        var startCalendar: Calendar = Calendar.getInstance()
+        val startCalendar: Calendar = Calendar.getInstance()
         // This will be the String used to construct the newQuit
-        //var quitTitle: String = "Untitled"
-
 
         // sets up the Date Selector Button
         setDateBtn(dateBtn, startDateText, startCalendar)
@@ -84,13 +79,6 @@ class AddQuitFragment : DialogFragment(){
         cancelBtn.setOnClickListener {
             this.dismiss()
         }
-
-
-
-
-
-
-
 
 
         return root
@@ -111,29 +99,31 @@ class AddQuitFragment : DialogFragment(){
             Log.d("AddQuitFrag", "dateBtn clicked!")
 
             // Date picker variables
-            var year = startCalendar.get(Calendar.YEAR)
-            var month = startCalendar.get(Calendar.MONTH)
-            var day = startCalendar.get(Calendar.DAY_OF_MONTH)
+            val year = startCalendar.get(Calendar.YEAR)
+            val month = startCalendar.get(Calendar.MONTH)
+            val day = startCalendar.get(Calendar.DAY_OF_MONTH)
 
 
 
-            var datePickerDialog: DatePickerDialog = DatePickerDialog(requireActivity(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            val datePickerDialog = DatePickerDialog(requireActivity(),
+                { _, yearSelected, monthSelected, daySelected ->
 
-                // updates text in fragment to represent selected Date
-                startDateText.text = "$dayOfMonth/${monthOfYear + 1}/$year"
+                    // updates text in fragment to represent selected Date
+                    val startDayDisplayText = "$daySelected/${monthSelected + 1}/$yearSelected"
+                    startDateText.text = startDayDisplayText
 
-                // updates startCalendar to selected Date, time will be set elsewhere
-                // Only updates the date and keeps the time the same
-                startCalendar.set(year,
-                    monthOfYear,
-                    dayOfMonth,
-                    startCalendar.get(Calendar.HOUR_OF_DAY),
-                    startCalendar.get(Calendar.MINUTE))
+                    // updates startCalendar to selected Date, time will be set elsewhere
+                    // Only updates the date and keeps the time the same
+                    startCalendar.set(yearSelected,
+                        monthSelected,
+                        daySelected,
+                        startCalendar.get(Calendar.HOUR_OF_DAY),
+                        startCalendar.get(Calendar.MINUTE))
 
-                Log.d("AddQuitFrag", "datePickerDialog Date: ${startCalendar.get(Calendar.DAY_OF_MONTH)}/${startCalendar.get(Calendar.MONTH)+1}/${startCalendar.get(Calendar.YEAR)}")
+                    Log.d("AddQuitFrag", "datePickerDialog Date: ${startCalendar.get(Calendar.DAY_OF_MONTH)}/${startCalendar.get(Calendar.MONTH)+1}/${startCalendar.get(Calendar.YEAR)}")
 
 
-            }, year, month, day)
+                }, year, month, day)
 
             datePickerDialog.show()
 
@@ -154,24 +144,26 @@ class AddQuitFragment : DialogFragment(){
             Log.d("AddQuitFrag", "timeBtn clicked!")
 
             // time picker variables
-            var hour = startCalendar.get(Calendar.HOUR_OF_DAY)
-            var minute = startCalendar.get(Calendar.MINUTE)
+            val hour = startCalendar.get(Calendar.HOUR_OF_DAY)
+            val minute = startCalendar.get(Calendar.MINUTE)
 
-            var timePickerDialog: TimePickerDialog = TimePickerDialog(requireActivity(), TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+            val timePickerDialog = TimePickerDialog(requireActivity(),
+                { _, hourSelected, minuteSelected ->
 
-                // updates text in fragment to represent new time
-                startTimeText.text = "$hourOfDay:$minute"
+                    // updates text in fragment to represent new time
+                    val startTimeDisplayText = "$hourSelected:$minuteSelected"
+                    startTimeText.text = startTimeDisplayText
 
-                // updates startCalendar to selected Time, date will be set elsewhere
-                // Only updates the time and keeps the day the same
-                startCalendar.set(startCalendar.get(Calendar.YEAR),
-                    startCalendar.get(Calendar.MONTH),
-                    startCalendar.get(Calendar.DAY_OF_MONTH),
-                    hourOfDay,
-                    minute)
+                    // updates startCalendar to selected Time, date will be set elsewhere
+                    // Only updates the time and keeps the day the same
+                    startCalendar.set(startCalendar.get(Calendar.YEAR),
+                        startCalendar.get(Calendar.MONTH),
+                        startCalendar.get(Calendar.DAY_OF_MONTH),
+                        hourSelected,
+                        minuteSelected)
 
 
-            }, hour, minute, true)
+                }, hour, minute, true)
 
             timePickerDialog.show()
 

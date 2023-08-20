@@ -1,7 +1,7 @@
 package com.kryzano.done
 
 import java.util.Calendar
-import java.util.Date
+
 
 /**
  * Quit Object that keeps a Date of when one has quit, and a title

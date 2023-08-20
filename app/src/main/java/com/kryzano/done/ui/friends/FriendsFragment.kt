@@ -7,17 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.done.databinding.FragmentFriendsBinding
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.kryzano.done.Auth
-import com.kryzano.done.Database
 import com.kryzano.done.MainViewModel
 import com.kryzano.done.User
 
@@ -33,8 +29,7 @@ class FriendsFragment : Fragment() {
         this.onSignInResult(result)
     }
 
-    lateinit var fuser: FirebaseUser // This is the auth user
-    lateinit var mainViewModel: MainViewModel
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var user: User
 
 
@@ -48,9 +43,9 @@ class FriendsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val friendsViewModel =
-            ViewModelProvider(this).get(FriendsViewModel::class.java)
+            ViewModelProvider(this)[FriendsViewModel::class.java]
 
-        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         user = mainViewModel.getUser()
 
         _binding = FragmentFriendsBinding.inflate(inflater, container, false)
@@ -62,12 +57,6 @@ class FriendsFragment : Fragment() {
         }
 
         Auth(mainViewModel).checkAuth(signInLauncher)
-        //checkAuth()
-
-
-
-
-
 
 
 
@@ -89,7 +78,6 @@ class FriendsFragment : Fragment() {
      */
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
 
-        val response = result.idpResponse // for error handeling
         if (result.resultCode == RESULT_OK ) {
             Auth(mainViewModel).onSignInResultGood(requireActivity())
         } else {

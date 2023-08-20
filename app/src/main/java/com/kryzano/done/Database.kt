@@ -1,17 +1,15 @@
 package com.kryzano.done
 import android.util.Log
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+
 
 // TODO: Could make a private attribute uid, instead of always passing it to the method
 
 // Note, Database().getWhatever() halts code execution.
-// And Database().fetchWhatever() provides a callback for asyn calls
-class Database() {
+// And Database().fetchWhatever() provides a callback for asynchronous execution
+class Database {
 
     // Gets our Firebase Instance
     private val fdb = Firebase.firestore
@@ -38,7 +36,7 @@ class Database() {
     }
 
     /**
-     * Fetchs the username from a given uid (might be redundant since
+     * Fetches the username from a given uid (might be redundant since
      *  one can also do FirebaseUser.displayName
      *
      *  Args: uid:String
@@ -92,7 +90,7 @@ class Database() {
 
     /**
      * Fetches the quits given a users uid (usually email).
-     * method gives a call back for asyn
+     * method gives a call back for asynchronous execution
      * see: https://stackoverflow.com/questions/57330766/why-does-my-function-that-calls-an-api-or-launches-a-coroutine-return-an-empty-o/57330767#57330767
      *
      * Args: uid: String
@@ -103,7 +101,7 @@ class Database() {
 
         val docRef = fdb.collection("users").document("/$uid")
         docRef.collection("/quits").get().addOnSuccessListener {
-            var quitList: ArrayList<Quit> = ArrayList()
+            val quitList: ArrayList<Quit> = ArrayList()
             val result = it
             for (document in result) {
                 Log.d("DatabaseFetch","ID: ${document.id}, Data: ${document.data}")
@@ -132,7 +130,7 @@ class Database() {
      */
     fun getQuits(uid: String):ArrayList<Quit>{
 
-        var quitList: ArrayList<Quit> = ArrayList()
+        val quitList: ArrayList<Quit> = ArrayList()
 
         try{
             val docRef = fdb.collection("users").document("/$uid").collection("/quits")
@@ -163,7 +161,7 @@ class Database() {
 
     /**
      * Fetches the friends given a users uid (usually email).
-     * method gives a call back for asyn
+     * method gives a call back for asynchronous execution
      * see: https://stackoverflow.com/questions/57330766/why-does-my-function-that-calls-an-api-or-launches-a-coroutine-return-an-empty-o/57330767#57330767
      *
      * Args: uid: String
@@ -174,14 +172,14 @@ class Database() {
 
         val docRef = fdb.collection("users").document("/$uid")
         docRef.collection("/friends").get().addOnSuccessListener {
-            var friendList: ArrayList<String> = ArrayList()
+            val friendList: ArrayList<String> = ArrayList()
             val result = it
             for (document in result) {
                 Log.d("DatabaseFetch","ID: ${document.id}, Data: ${document.data}")
-                val fuid = document.data["uid"].toString() // get the title
+                val friendUid = document.data["uid"].toString() // get the title
 
-                Log.d("DatabaseFetch","friend: ${fuid}")
-                friendList.add(fuid) // add the Quit to list
+                Log.d("DatabaseFetch","friend: $friendUid")
+                friendList.add(friendUid) // add the Quit to list
 
             }
 
@@ -199,7 +197,7 @@ class Database() {
      */
     fun getFriends(uid: String):ArrayList<String> {
 
-        var friendList: ArrayList<String> = ArrayList()
+        val friendList: ArrayList<String> = ArrayList()
 
         try {
             val docRef = fdb.collection("users").document("/$uid").collection("/friends")
@@ -211,10 +209,10 @@ class Database() {
 
             for (document in result) {
                 Log.d("DatabaseFetch", "ID: ${document.id}, Data: ${document.data}")
-                val fuid = document.data["uid"].toString() // get the title
+                val friendUid = document.data["uid"].toString() // get the title
 
-                Log.d("DatabaseFetch", "friend: $fuid")
-                friendList.add(fuid) // add the Quit to list
+                Log.d("DatabaseFetch", "friend: $friendUid")
+                friendList.add(friendUid) // add the Quit to list
 
             }
 
@@ -226,7 +224,7 @@ class Database() {
 
     /**
      * Fetches the blocks given a users uid (usually email).
-     * method gives a call back for asyn
+     * method gives a call back for asynchronous execution
      * see: https://stackoverflow.com/questions/57330766/why-does-my-function-that-calls-an-api-or-launches-a-coroutine-return-an-empty-o/57330767#57330767
      *
      * Args: uid: String
@@ -237,14 +235,14 @@ class Database() {
 
         val docRef = fdb.collection("users").document("/$uid")
         docRef.collection("/blocks").get().addOnSuccessListener {
-            var blockList: ArrayList<String> = ArrayList()
+            val blockList: ArrayList<String> = ArrayList()
             val result = it
             for (document in result) {
                 Log.d("DatabaseFetch","ID: ${document.id}, Data: ${document.data}")
-                val buid = document.data["uid"].toString() // get the title
+                val blockUid = document.data["uid"].toString() // get the title
 
-                Log.d("DatabaseFetch","block: ${buid}")
-                blockList.add(buid) // add the Quit to list
+                Log.d("DatabaseFetch","block: $blockUid")
+                blockList.add(blockUid) // add the Quit to list
 
             }
 
@@ -255,7 +253,7 @@ class Database() {
 
     fun getBlocks(uid: String):ArrayList<String> {
 
-        var blockList: ArrayList<String> = ArrayList()
+        val blockList: ArrayList<String> = ArrayList()
 
         try {
             val docRef = fdb.collection("users").document("/$uid").collection("/blocks")
@@ -267,10 +265,10 @@ class Database() {
 
             for (document in result) {
                 Log.d("DatabaseFetch", "ID: ${document.id}, Data: ${document.data}")
-                val buid = document.data["uid"].toString() // get the title
+                val blockUid = document.data["uid"].toString() // get the title
 
-                Log.d("DatabaseFetch", "friend: $buid")
-                blockList.add(buid) // add the Quit to list
+                Log.d("DatabaseFetch", "friend: $blockUid")
+                blockList.add(blockUid) // add the Quit to list
 
             }
 
