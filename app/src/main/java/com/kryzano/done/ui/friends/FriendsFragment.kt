@@ -1,7 +1,6 @@
 package com.kryzano.done.ui.friends
 
 import android.app.Activity.RESULT_OK
-import android.app.PendingIntent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,10 +14,12 @@ import com.example.done.databinding.FragmentFriendsBinding
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import org.checkerframework.checker.index.qual.NonNegative
+import com.kryzano.done.Auth
+import com.kryzano.done.Database
+import com.kryzano.done.MainViewModel
+import com.kryzano.done.User
 
 class FriendsFragment : Fragment() {
 
@@ -32,8 +33,9 @@ class FriendsFragment : Fragment() {
         this.onSignInResult(result)
     }
 
-    lateinit var user: FirebaseUser // This is the auth user
-
+    lateinit var fuser: FirebaseUser // This is the auth user
+    lateinit var mainViewModel: MainViewModel
+    private lateinit var user: User
 
 
     // This property is only valid between onCreateView and
@@ -48,6 +50,9 @@ class FriendsFragment : Fragment() {
         val friendsViewModel =
             ViewModelProvider(this).get(FriendsViewModel::class.java)
 
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        user = mainViewModel.getUser()
+
         _binding = FragmentFriendsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -56,7 +61,8 @@ class FriendsFragment : Fragment() {
             textView.text = it
         }
 
-        checkAuth()
+        Auth(mainViewModel).checkAuth(signInLauncher)
+        //checkAuth()
 
 
 
@@ -73,50 +79,6 @@ class FriendsFragment : Fragment() {
         _binding = null
     }
 
-    /**
-     * Checks if a user is logged in, if not lauches the login intent
-     *
-     * Args: None
-     * Return: None
-     */
-    private fun checkAuth(){
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            Log.d("Auth", "providerData: ${user.providerData.size}")
-        }
-        if (user == null || user.providerData.size <= 1) {
-            // Need to login
-            val providers = arrayListOf(
-                AuthUI.IdpConfig.EmailBuilder().build()
-            )
-
-            // Create and launch sign-in intent
-            val signInIntent = AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .enableAnonymousUsersAutoUpgrade()
-                .build()
-            signInLauncher.launch(signInIntent)
-
-        } else {
-
-            if(user.isEmailVerified){
-                this.user = user // All is good, log us in
-            } else {
-                user.sendEmailVerification()
-                // Email is not verified
-                AuthUI.getInstance().signOut(requireContext())
-                    .addOnCompleteListener {
-
-                        Toast.makeText(context, "Email not verified", Toast.LENGTH_LONG).show()
-                        checkAuth()
-                    }
-            }
-
-
-        }
-
-    }
 
     /**
      * Callback for on SignInResults from signIn Intent
@@ -129,8 +91,11 @@ class FriendsFragment : Fragment() {
 
         val response = result.idpResponse // for error handeling
         if (result.resultCode == RESULT_OK ) {
-            checkAuth()
+            Auth(mainViewModel).onSignInResultGood(requireActivity())
         } else {
+            Log.d("Auth","Failed: ${result.resultCode}")
+            FirebaseAuth.getInstance().currentUser?.delete()
+            Auth(mainViewModel).checkAuth(signInLauncher)
             // failed
         }
 

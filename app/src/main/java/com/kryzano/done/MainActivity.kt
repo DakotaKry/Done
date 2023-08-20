@@ -9,6 +9,7 @@ import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.kryzano.done.ui.quit.QuitViewModel
 import java.util.Calendar
+import java.util.concurrent.TimeoutException
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,25 +34,42 @@ class MainActivity : AppCompatActivity() {
 
     // Authentication Attributes //
     //lateinit var auth: FirebaseAuth // This is the auth user
-    lateinit var fuser: FirebaseUser
+    var fuser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+
     lateinit var user: User
+    lateinit var mainViewModel: MainViewModel
+    lateinit var auth:Auth
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Must Be Ran First AND In Order //
 
+        // TODO: Remove testing line below
+        if (this.fuser != null){ FirebaseAuth.getInstance().signOut()} // Makes sure we are signed out for testing
+
+        // Sets up mainViewModel
+        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        // Sets reference to mainViewModel
+        auth = Auth(mainViewModel)
+        auth.initAuth() // Logs in user or signs in anon. Returns a User class
+        user = mainViewModel.getUser()
+
+        // binding must be called after user in MainViewModel has been initialized!!
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        checkAuth()
+
+        // You can get the User class anywhere from the mainViewModel
+
+        // End Run First //
 
 
-
-
-
+        // TODO: Some of this might be redundant
         // Boolean to see if we need to freeze Nav Bar init to false
-        var freezeNav: MutableLiveData<Boolean>
         val navView: BottomNavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
@@ -65,31 +84,23 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
-        val mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        freezeNav = mainViewModel.getFreezeNavLive()
-        // Observes when there is a change to freezeNav property
-        freezeNav.observe(this, Observer<Boolean>(){
-            if (freezeNav.value == true) {
-                Log.d("LiveData", "freezeNav is True!")
-                navView.menu.forEach { it.isEnabled = false }
 
-            } else {
-                Log.d("LiveData","freezeNav is False!")
-                navView.menu.forEach { it.isEnabled = true }
-            }
-            Log.d("LiveData","freezeNav observed!")
-        })
 
 
         // Database testing TODO: Remove
-        var testUser: User = User("test@test.com", "dummyTestUser")
-        testUser.addQuit(Quit("testQuit", Calendar.getInstance()))
-        val db: Database = Database()
-        db.createNewUser(testUser)
-        val quitList = db.getQuits("test@test.com")
-        Log.d("Test","$quitList")
-        val username = db.getUsername("test@test.com")
-        Log.d("Test","$username")
+        user.addQuit(Quit("testQuit", Calendar.getInstance()))
+        val cal = Calendar.getInstance()
+        cal.set(2023,6,23, 0, 0, 0)
+        user.addQuit(Quit("Weed", cal))
+        val quitList = user.getQuitList()
+        Log.d("Test","Test Quit: $quitList")
+        val username = user.getUsername()
+        Log.d("Test","Test Username: $username")
+        //Log.d("Test", "Test UID: ${fuser!!.uid}")
+
+
+
+
 
 
 
@@ -97,25 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun checkAuth(){
 
-        val user = FirebaseAuth.getInstance().currentUser
-
-        Log.d("Auth", "User: ${user.toString()}")
-
-
-        if (user == null){
-            // Anon auth
-            Log.d("Auth", "signInAnon")
-            FirebaseAuth.getInstance().signInAnonymously()
-
-        }
-
-        if (user != null) {
-            this.fuser = user
-        }
-
-    }
 
 
 }

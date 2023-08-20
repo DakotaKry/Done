@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,7 @@ import com.example.done.R
 import com.example.done.databinding.FragmentQuitBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.kryzano.done.User
 import java.util.Calendar
 
 class QuitFragment : Fragment() {
@@ -32,6 +34,8 @@ class QuitFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var user: User
+    lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,18 +44,22 @@ class QuitFragment : Fragment() {
     ): View {
 
         // mainViewModel for communicating with MainActivity
-        val mainViewModel: MainViewModel by activityViewModels()
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
 
         /**
          *  Testing quitList
          *  TODO: Implement a User Object that will hold our users quitList
          */
 
+        user = mainViewModel.getUser()
+        //Log.d("ViewModel", "User in Quit Frag: ${user.getUsername()}")
+
+
         var quitList: ArrayList<Quit> = ArrayList()
         val cal = Calendar.getInstance()
-        cal.set(2022,3,4, 6, 23, 32)
-        quitList.add(Quit("test1", Calendar.getInstance()))  // Note, since this is init in the frag and also always current. Switching frags will reset
-        quitList.add(Quit("test2",cal)) // this one will not be reset as a hard date is given
+        cal.set(2019,4,29, 0, 0, 0)
+        user.addQuit(Quit("smoking",cal)) // this one will not be reset as a hard date is given
 
         // Ends Testing Code //
 
@@ -62,7 +70,7 @@ class QuitFragment : Fragment() {
         // Recycler View Code //
         val recyclerView = binding.recyclerviewQuit
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = QuitRecyclerViewAdapter(quitList)
+        val adapter = QuitRecyclerViewAdapter(user.getQuitList())
 
         recyclerView.adapter = adapter
 

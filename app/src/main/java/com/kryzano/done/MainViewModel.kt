@@ -10,24 +10,20 @@ import androidx.lifecycle.ViewModel
  */
 class MainViewModel : ViewModel() {
 
+    private lateinit var user: User
+
     private val _freezeNav = MutableLiveData<Boolean>().apply {
         value = false
     }
 
-    /**
-     * getFreezeNavLive
-     * gets the MutableLiveData<Boolean> so one can observe when the data has changed
-     */
-    fun getFreezeNavLive(): MutableLiveData<Boolean> {
-        return _freezeNav
+    fun setUser(user: User){
+        this.user = user
     }
 
-    /**
-     * setFreezeNavLive
-     * sets the boolean value for _freezeNav
-     */
-    fun setFreezeNavLive(boolean: Boolean){
-        _freezeNav.postValue(boolean)
+    fun getUser(): User{
+        return this.user
     }
+
+
 
 }
