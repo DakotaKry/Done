@@ -1,5 +1,6 @@
 package com.kryzano.done
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.UserProfileChangeRequest.Builder
@@ -19,6 +20,7 @@ class User(fuser: FirebaseUser) {
     fun refreshFuser(fuser: FirebaseUser){
         this.uid = fuser.uid
         this.fuser = fuser
+        this.initialize()
     }
 
     fun getUid(): String {
@@ -32,6 +34,9 @@ class User(fuser: FirebaseUser) {
      * Returns: None
      */
     fun initialize() {
+        Log.d("User", "initalize")
+
+        Log.d("Database", "Fetching for: ${this.uid}")
 
         for ( friend in friends ){
             db.addFriend(this.uid, friend)
@@ -55,6 +60,7 @@ class User(fuser: FirebaseUser) {
         }
         db.fetchQuits(this.uid){ result ->
             this.quitList = result
+            Log.d("Sync","quits fetched: ${this.quitList}")
         }
         db.fetchBlocks(this.uid){ result ->
             this.blockList = result
