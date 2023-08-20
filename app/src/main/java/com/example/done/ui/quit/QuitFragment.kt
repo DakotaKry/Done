@@ -9,10 +9,13 @@ import android.widget.TextView
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.done.MainActivity
+import com.example.done.MainViewModel
 import com.example.done.R
 import com.example.done.databinding.FragmentQuitBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -31,7 +34,7 @@ class QuitFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val quitViewModel =
-            ViewModelProvider(this).get(QuitViewModel::class.java)
+            ViewModelProvider(this)[QuitViewModel::class.java]
 
         _binding = FragmentQuitBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -44,6 +47,8 @@ class QuitFragment : Fragment() {
         addQuitButton.setOnClickListener {
             Log.d("QuitFrag", "addQuitButton Clicked!")
 
+            val mainViewModel: MainViewModel by activityViewModels()
+            mainViewModel.setFreezeNavLive(true)
 
             val addQuitFragment: Fragment = AddQuitFragment()
             val addQuitTransaction: FragmentTransaction = childFragmentManager.beginTransaction().apply {
