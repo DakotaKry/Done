@@ -20,6 +20,8 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.kryzano.done.ui.quit.QuitViewModel
 import java.util.Calendar
@@ -30,7 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     // Authentication Attributes //
     //lateinit var auth: FirebaseAuth // This is the auth user
-    lateinit var user: FirebaseUser
+    lateinit var fuser: FirebaseUser
+    lateinit var user: User
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkAuth()
+
 
 
 
@@ -84,6 +88,8 @@ class MainActivity : AppCompatActivity() {
         db.createNewUser(testUser)
         val quitList = db.getQuits("test@test.com")
         Log.d("Test","$quitList")
+        val username = db.getUsername("test@test.com")
+        Log.d("Test","$username")
 
 
 
@@ -97,15 +103,19 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("Auth", "User: ${user.toString()}")
 
-        if (user != null){
 
-            // user is signed in
-        } else {
+        if (user == null){
             // Anon auth
             Log.d("Auth", "signInAnon")
             FirebaseAuth.getInstance().signInAnonymously()
 
         }
 
+        if (user != null) {
+            this.fuser = user
+        }
+
     }
+
+
 }
