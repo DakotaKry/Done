@@ -14,4 +14,7 @@
 
     <string name="fui_missing_first_and_last_name" translation_description="Inline error for empty email address in input field. [CHAR_LIMIT=60]">Please enter a username.</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">Username</string>
+    <string name="quit_drawer_delete">Delete</string>
+    <string name="quit_drawer_edit">Edit</string>
+    <string name="quit_drawer_relapsed">Relapsed</string>
 </resources>
