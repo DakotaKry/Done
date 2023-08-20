@@ -17,4 +17,6 @@
     <string name="quit_drawer_delete">Delete</string>
     <string name="quit_drawer_edit">Edit</string>
     <string name="quit_drawer_relapsed">Relapsed</string>
+    <string name="button_add_friend_description">Adds a new friend</string>
+    <string name="button_add_quit_description">Adds new quit</string>
 </resources>
