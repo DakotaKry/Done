@@ -1,4 +1,4 @@
-package com.example.done.ui.auth
+package com.kryzano.done.ui.auth
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

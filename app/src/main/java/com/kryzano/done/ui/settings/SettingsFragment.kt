@@ -1,4 +1,4 @@
-package com.example.done.ui.settings
+package com.kryzano.done.ui.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater

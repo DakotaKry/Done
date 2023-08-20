@@ -1,4 +1,4 @@
-package com.example.done.ui.quit
+package com.kryzano.done.ui.quit
 
 import android.os.Bundle
 import android.util.Log
@@ -17,9 +17,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.done.MainActivity
-import com.example.done.MainViewModel
-import com.example.done.Quit
+import com.kryzano.done.MainActivity
+import com.kryzano.done.MainViewModel
+import com.kryzano.done.Quit
 import com.example.done.R
 import com.example.done.databinding.FragmentQuitBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView

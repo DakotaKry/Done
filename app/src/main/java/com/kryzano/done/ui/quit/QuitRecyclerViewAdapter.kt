@@ -1,4 +1,4 @@
-package com.example.done.ui.quit
+package com.kryzano.done.ui.quit
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.done.Quit
+import com.kryzano.done.Quit
 import com.example.done.R
 import java.lang.Exception
 import java.time.Year

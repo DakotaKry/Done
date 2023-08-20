@@ -1,4 +1,4 @@
-package com.example.done.ui.friends
+package com.kryzano.done.ui.friends
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.done.ui.quit
+package com.kryzano.done.ui.quit
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog

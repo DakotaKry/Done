@@ -1,4 +1,4 @@
-package com.example.done
+package com.kryzano.done
 
 import java.util.Calendar
 import java.util.Date

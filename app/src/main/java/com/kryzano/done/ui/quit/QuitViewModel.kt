@@ -1,4 +1,4 @@
-package com.example.done.ui.quit
+package com.kryzano.done.ui.quit
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

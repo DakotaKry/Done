@@ -6,7 +6,7 @@
     android:id="@+id/container_quit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.quit.QuitFragment">
+    tools:context="com.kryzano.done.ui.quit.QuitFragment">
 
     <TextView
         android:id="@+id/text_home"
