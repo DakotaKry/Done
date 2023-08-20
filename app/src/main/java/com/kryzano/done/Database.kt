@@ -23,25 +23,16 @@ class Database {
      * returns: None
      */
     fun pushUsername(uid: String, username: String){
+        Log.d("DatabasePush","pushed username $username to $uid")
 
-        // Sets Username //
-
-        // creates a hashmap for the users field
-        val usernameData = hashMapOf(
-            "username" to username
-        )
-
-        fdbUsers.document("/${uid}").set(usernameData)
+        fdbUsers.document("/${uid}").update("username", username)
 
     }
 
     fun pushEmail(uid: String, email: String){
+        Log.d("DatabasePush","pushed email")
 
-        val emailData = hashMapOf(
-            "email" to email
-        )
-
-        fdbUsers.document("/${uid}").set(emailData)
+        fdbUsers.document("/${uid}").update("email", email)
 
     }
 
