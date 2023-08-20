@@ -63,7 +63,10 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
             viewHolder.timerTextView.postDelayed(Runnable {
                 val quitStartTime = quitList[position].getCalendar()
                 val elapsed = timeElapsed(quitStartTime) // Array of time elapsed
-                val elapsedText = "${elapsed[0]} y, ${elapsed[1]} m, ${elapsed[2]} d, ${elapsed[3]}:${elapsed[4]}:${elapsed[5]}"
+                var elapsedText = getDisplayFormat(elapsed)
+
+
+                //elapsedText = "${elapsed[0]} y, ${elapsed[1]} m, ${elapsed[2]} d, ${elapsed[3]}:${elapsed[4]}:${elapsed[5]}"
 
                 viewHolder.timerTextView.text = elapsedText
 
@@ -77,6 +80,27 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
 
 
 
+    }
+
+    private fun getDisplayFormat(elapsed: Array<Int>): String {
+        var elapsedText = ""
+        if ((elapsed[0] != 0)) {
+            elapsedText = ("${elapsed[0]} yrs," +
+                    " ${elapsed[1]} mos, ${elapsed[2]} days" +
+                    " ${elapsed[3]}:${elapsed[4]}:${elapsed[5].toString().padStart(2,'0')}")
+        } else if ((elapsed[1] != 0)) {
+            elapsedText = ("${elapsed[1]} mos, ${elapsed[2]} days," +
+                    " ${elapsed[3]}:${elapsed[4]}:${elapsed[5].toString().padStart(2,'0')}")
+        } else if ((elapsed[2] != 0)) {
+            elapsedText = ("${elapsed[2]} days," +
+                    " ${elapsed[3]}:${elapsed[4].toString().padStart(2, '0')}:${elapsed[5].toString().padStart(2,'0')}")
+        } else if ((elapsed[3] != 0)){
+            elapsedText = ("${elapsed[3]}:${elapsed[4].toString().padStart(2, '0')}:${elapsed[5].toString().padStart(2,'0')}")
+        } else if ((elapsed[4] != 0)){
+            elapsedText = ("${elapsed[4]}:${elapsed[5].toString().padStart(2,'0')}")
+        } else {elapsedText = ("${elapsed[5]}")}
+
+        return elapsedText
     }
 
 
