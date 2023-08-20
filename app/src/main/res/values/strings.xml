@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Done</string>
+    <string name="title_home">Quit</string>
+    <string name="title_dashboard">Friends</string>
+    <string name="title_notifications">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
