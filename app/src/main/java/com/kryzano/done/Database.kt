@@ -74,7 +74,10 @@ class Database {
             val docRef = fdb.collection("users").document("/$email")
             val task = docRef.collection("/quits").get()
             while (!task.isComplete){
+                Thread.sleep(100)
                 // Does nothing as we wait for the task to complete
+                // TODO: Consider Async design using Livedata so not to freeze thread
+                // https://stackoverflow.com/questions/57330766/why-does-my-function-that-calls-an-api-or-launches-a-coroutine-return-an-empty-o/57330767#57330767
             }
             val result = task.result
 
