@@ -16,6 +16,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.done.R
 import com.example.done.databinding.ActivityMainBinding
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kryzano.done.ui.quit.QuitViewModel
 import java.util.Calendar
 
@@ -23,12 +28,22 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    // Authentication Attributes //
+    //lateinit var auth: FirebaseAuth // This is the auth user
+    lateinit var user: FirebaseUser
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        checkAuth()
+
+
+
 
         // Boolean to see if we need to freeze Nav Bar init to false
         var freezeNav: MutableLiveData<Boolean>
@@ -73,6 +88,24 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+    }
+
+    private fun checkAuth(){
+
+        val user = FirebaseAuth.getInstance().currentUser
+
+        Log.d("Auth", "User: ${user.toString()}")
+
+        if (user != null){
+
+            // user is signed in
+        } else {
+            // Anon auth
+            Log.d("Auth", "signInAnon")
+            FirebaseAuth.getInstance().signInAnonymously()
+
+        }
 
     }
 }
