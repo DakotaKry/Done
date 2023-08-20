@@ -10,6 +10,7 @@ class MainViewModel : ViewModel() {
 
     private lateinit var user: User
     private var quitEdit: Quit? = null
+    private var friendView: String? = null
 
     fun setUser(user: User){
         this.user = user
@@ -29,6 +30,14 @@ class MainViewModel : ViewModel() {
 
     fun removeQuitEdit(){
         this.quitEdit = null
+    }
+
+    fun setFriendView(friend: String){
+        this.friendView = friend
+    }
+
+    fun getFriendView(): String? {
+        return this.friendView
     }
 
 
