@@ -24,6 +24,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.kryzano.done.ui.quit.QuitFragment
 import com.kryzano.done.ui.quit.QuitViewModel
 import java.util.Calendar
 import java.util.concurrent.TimeoutException
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         auth = Auth(mainViewModel)
         auth.initAuth() // Logs in user or signs in anon. Returns a User class
         user = mainViewModel.getUser()
+
         user.initialize()
 
         // binding must be called after user in MainViewModel has been initialized!!
@@ -87,30 +89,7 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
-
-
-
-        // Database testing TODO: Remove
-        //user.addQuit(Quit("testQuit", Calendar.getInstance()))
-        //val cal = Calendar.getInstance()
-        //cal.set(2023,6,23, 0, 0, 0)
-        //user.addQuit(Quit("Weed", cal))
-        //val quitList = user.getQuitList()
-        //Log.d("Test","Test Quit: $quitList")
-        //val username = user.getUsername()
-        //Log.d("Test","Test Username: $username")
-        //Log.d("Test", "Test UID: ${fuser!!.uid}")
-
-
-
-
-
-
-
-
-
     }
-
 
 
 
