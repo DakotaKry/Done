@@ -6,8 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
+    android:clickable="true"
     >
 
     <TextView
@@ -16,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="37dp"
         android:layout_marginBottom="37dp"
-        android:textSize="23sp"
+        android:textSize="32sp"
         android:text="John Apple Smith"
         android:textColor="?android:textColorPrimary"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +30,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_friends_quit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/friend_title_text"
