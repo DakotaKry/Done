@@ -52,10 +52,7 @@ class FriendsFragment : Fragment() {
         _binding = FragmentFriendsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        friendsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+
 
         Auth(mainViewModel).checkAuth(signInLauncher)
 
