@@ -29,15 +29,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Boolean to see if we need to freeze Nav Bar init to false
-        var freezeNav: MutableLiveData<Boolean> = MutableLiveData(false)
-
-
+        var freezeNav: MutableLiveData<Boolean>
         val navView: BottomNavigationView = binding.navView
-
-
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
@@ -49,12 +46,11 @@ class MainActivity : AppCompatActivity() {
 
         val mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         freezeNav = mainViewModel.getFreezeNavLive()
-        // Observes when the live data changes
+        // Observes when there is a change to freezeNav property
         freezeNav.observe(this, Observer<Boolean>(){
             if (freezeNav.value == true) {
                 Log.d("LiveData", "freezeNav is True!")
                 navView.menu.forEach { it.isEnabled = false }
-
 
             } else {
                 Log.d("LiveData","freezeNav is False!")
@@ -62,8 +58,6 @@ class MainActivity : AppCompatActivity() {
             }
             Log.d("LiveData","freezeNav observed!")
         })
-
-        // Change the value of the live data To be implemented with ViewModel to change across fragments
 
 
 

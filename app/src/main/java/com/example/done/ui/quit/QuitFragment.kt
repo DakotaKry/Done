@@ -33,8 +33,10 @@ class QuitFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val quitViewModel =
-            ViewModelProvider(this)[QuitViewModel::class.java]
+
+        // mainViewModel for communicating with MainActivity
+        val mainViewModel: MainViewModel by activityViewModels()
+
 
         _binding = FragmentQuitBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -47,11 +49,12 @@ class QuitFragment : Fragment() {
         addQuitButton.setOnClickListener {
             Log.d("QuitFrag", "addQuitButton Clicked!")
 
-            val mainViewModel: MainViewModel by activityViewModels()
+            // Freeze nav menu
             mainViewModel.setFreezeNavLive(true)
 
+            // Show Add Quit popup fragment
             val addQuitFragment: Fragment = AddQuitFragment()
-            val addQuitTransaction: FragmentTransaction = childFragmentManager.beginTransaction().apply {
+            childFragmentManager.beginTransaction().apply {
                 add(R.id.fragment_fragment_quit, addQuitFragment)
                 commit()
             }
