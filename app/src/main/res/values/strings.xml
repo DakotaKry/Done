@@ -3,6 +3,11 @@
     <string name="title_home">Quit</string>
     <string name="title_dashboard">Friends</string>
     <string name="title_notifications">Settings</string>
+    <string name="prompt_quit_title">What are you quitting?</string>
+    <string name="pick_date_button">Pick a date</string>
+    <string name="title_new_quit">Quit something new</string>
+    <string name="new_quit_done_button_title">Done</string>
+    <string name="new_quit_cancel_button_title">Cancel</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
