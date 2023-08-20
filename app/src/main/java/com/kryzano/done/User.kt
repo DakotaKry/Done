@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.UserProfileChangeRequest.Builder
 import java.lang.Exception
+import javax.security.auth.callback.Callback
 
 class User(fuser: FirebaseUser) {
 
@@ -29,6 +30,7 @@ class User(fuser: FirebaseUser) {
 
     /**
      * Gets and overrides User with everything from Firestore
+     * This will suspend code execution until all data has been fetched
      *
      * Args: None
      * Returns: None
@@ -37,6 +39,7 @@ class User(fuser: FirebaseUser) {
         Log.d("User", "initalize")
 
         Log.d("Database", "Fetching for: ${this.uid}")
+
 
         for ( friend in friends ){
             db.addFriend(this.uid, friend)
@@ -51,20 +54,18 @@ class User(fuser: FirebaseUser) {
         }
 
 
-        db.fetchUsername(this.uid){ result ->
-            this.username = result
-        }
+        // Uses code execution halting versions of methods, to insure we have all data before we continue
+        // since this method is ran at startup, we want to wait until we have all the data before continuing
+        // else wise we would have to worry about notifying the QuitRecyclerViewAdapter that we now have data from here.
+        this.username = db.getUsername(this.uid)
 
-        db.fetchFriends(this.uid){ result ->
-            this.friends = result
-        }
-        db.fetchQuits(this.uid){ result ->
-            this.quitList = result
-            Log.d("Sync","quits fetched: ${this.quitList}")
-        }
-        db.fetchBlocks(this.uid){ result ->
-            this.blockList = result
-        }
+        this.friends = db.getFriends(this.uid)
+
+        this.blockList = db.getBlocks(this.uid)
+
+        this.quitList = db.getQuits(this.uid)
+        // Note, db.getWhatever() halts code execution. And db.fetchWhatever() provides a callback for asyn
+
 
     }
 
