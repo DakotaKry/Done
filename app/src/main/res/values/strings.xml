@@ -19,4 +19,8 @@
     <string name="quit_drawer_relapsed">Relapsed</string>
     <string name="button_add_friend_description">Adds a new friend</string>
     <string name="button_add_quit_description">Adds new quit</string>
+    <string name="title_add_friend">Add a Friend</string>
+    <string name="prompt_friend_title">Friends email</string>
+    <string name="day_month_year_placeholder">dd/mm/yyyy</string>
+    <string name="hour_minute_placeholder">hh:mm</string>
 </resources>
