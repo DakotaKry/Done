@@ -13,7 +13,6 @@ import com.kryzano.done.MainViewModel
 import com.example.done.databinding.FragmentQuitBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kryzano.done.User
-import java.util.Calendar
 
 class QuitFragment : Fragment(){
 
@@ -62,7 +61,8 @@ class QuitFragment : Fragment(){
 
             // Show Add Quit popup fragment
             AddQuitFragment().show(childFragmentManager,null)
-            adapter.notifyDataSetChanged() // Need to notify data set change in case they added a new quit
+            // Need to notify data set change in case they added a new quit
+            adapter.notifyDataSetChanged()
             // Live data might be more effective at this
 
 
