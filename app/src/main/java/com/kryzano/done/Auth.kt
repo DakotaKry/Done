@@ -11,6 +11,8 @@ import java.util.concurrent.TimeoutException
 
 class Auth(private val mainViewModel: MainViewModel) {
 
+    private val db = Database()
+
 
     fun onSignInResultGood(context: Context) {
 
@@ -26,7 +28,15 @@ class Auth(private val mainViewModel: MainViewModel) {
         else {
             Log.d("Auth","onSignInResultGood: refreshing User")
 
+
             mainViewModel.getUser().refreshFuser(fuser)
+            // This will sync the database username a Auth display name every login
+            fuser.displayName?.let { mainViewModel.getUser().setUsername(it) }
+
+            // Sets email in firestore so we can search by email
+            db.pushEmail(fuser.uid, fuser.email!!)
+
+            // syncs everything
             mainViewModel.getUser().initialize()
 
         }

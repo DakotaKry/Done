@@ -35,6 +35,16 @@ class Database {
 
     }
 
+    fun pushEmail(uid: String, email: String){
+
+        val emailData = hashMapOf(
+            "email" to email
+        )
+
+        fdbUsers.document("/${uid}").set(emailData)
+
+    }
+
     /**
      * Fetches the username from a given uid (might be redundant since
      *  one can also do FirebaseUser.displayName
