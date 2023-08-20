@@ -71,6 +71,8 @@ class Auth(mainViewModel: MainViewModel) {
             mainViewModel.setUser(user)
         }
 
+        Log.d("Auth", "Ending init fuser ${fuser!!.uid}")
+
         return user
 
     }
