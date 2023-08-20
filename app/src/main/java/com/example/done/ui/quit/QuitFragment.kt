@@ -5,8 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.view.forEach
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
@@ -49,15 +51,18 @@ class QuitFragment : Fragment() {
         addQuitButton.setOnClickListener {
             Log.d("QuitFrag", "addQuitButton Clicked!")
 
+            val frameLayout: FrameLayout = binding.fragmentFragmentQuit
             // Freeze nav menu
-            mainViewModel.setFreezeNavLive(true)
+            //mainViewModel.setFreezeNavLive(true)
 
             // Show Add Quit popup fragment
-            val addQuitFragment: Fragment = AddQuitFragment()
-            childFragmentManager.beginTransaction().apply {
-                add(R.id.fragment_fragment_quit, addQuitFragment)
-                commit()
-            }
+            AddQuitFragment().show(childFragmentManager,null)
+
+            //val addQuitFragment: DialogFragment = AddQuitFragment()
+            //childFragmentManager.beginTransaction().apply {
+            //    add(R.id.fragment_fragment_quit, addQuitFragment)
+            //    commit()
+            //}
 
 
 

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import com.example.done.R
 import com.example.done.databinding.FragmentAddQuitBinding
 import com.example.done.databinding.FragmentQuitBinding
@@ -15,7 +16,7 @@ import com.example.done.databinding.FragmentQuitBinding
  * Use the [AddQuitFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddQuitFragment : Fragment() {
+class AddQuitFragment : DialogFragment() {
 
     private var _binding: FragmentAddQuitBinding? = null
 
