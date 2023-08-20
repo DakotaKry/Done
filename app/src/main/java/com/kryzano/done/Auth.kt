@@ -19,11 +19,13 @@ class Auth(mainViewModel: MainViewModel) {
 
         val fuser = FirebaseAuth.getInstance().currentUser
         if (!fuser!!.isEmailVerified){
+            Log.d("Auth","onSignInResultGood: sending email verification")
             fuser.sendEmailVerification()
             AuthUI.getInstance().signOut(context)
             this.initAuth()
         }
         else {
+            Log.d("Auth","onSignInResultGood: refreshing User")
 
             mainViewModel.getUser().refreshFuser(fuser)
             mainViewModel.getUser().initialize()
@@ -39,6 +41,7 @@ class Auth(mainViewModel: MainViewModel) {
 
         if (fuser == null){
             try{
+                Log.d("Auth","initAuth: null fuser")
                 val task = FirebaseAuth.getInstance().signInAnonymously()
                 var timeOutCounter = 0
 
@@ -52,6 +55,8 @@ class Auth(mainViewModel: MainViewModel) {
                 }
 
                 fuser = task.result.user
+                assert(fuser != null)
+                Log.d("Auth", "initAuth: Has fuser")
                 //Log.d("ViewModel", "User set: ${mainViewModel.getUser().getUsername()}")
 
             } catch (e: Exception){ throw e }
@@ -77,8 +82,12 @@ class Auth(mainViewModel: MainViewModel) {
         if (fuser != null) { // Debug Block
             // TODO: This block is pointless
             Log.d("Auth", "providerData: ${fuser.providerData.size}")
-        }
+        } else { Log.d("Auth", "checkAuth: null fuser?!") }
 
+        if (fuser == null){
+            this.initAuth()
+            fuser = FirebaseAuth.getInstance().currentUser
+        }
         assert(fuser!=null)
 
         if(fuser!!.providerData.size<=1){
