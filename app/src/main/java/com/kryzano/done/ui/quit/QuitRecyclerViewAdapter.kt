@@ -1,23 +1,33 @@
 package com.kryzano.done.ui.quit
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.kryzano.done.Quit
 import com.example.done.R
+import com.kryzano.done.MainViewModel
+import com.kryzano.done.User
 import java.lang.Exception
+import java.lang.IndexOutOfBoundsException
 import java.time.Year
 import java.util.Calendar
 import kotlin.concurrent.thread
 
-class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
+class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>, private val user: User):
     RecyclerView.Adapter<QuitRecyclerViewAdapter.ViewHolder>(){
 
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
         // gets our views
         val timerTextView: TextView
@@ -28,8 +38,9 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
             titleTextView = itemView.findViewById(R.id.recycler_quit_title_text)
         }
 
-    }
 
+
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,6 +60,21 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
         // gets and updates with appropriate title
         viewHolder.titleTextView.text = quitList[position].getTitle()
 
+        // sets up a Long Click Listener on each row, that then displays a drop down menu
+        viewHolder.itemView.setOnLongClickListener {
+            Log.d("RecyclerView", "Long clicked")
+
+            // Popup Menu //
+            handlePopupMenu(viewHolder, position)
+
+
+        }
+
+
+
+
+
+
 
         /**
          * gets and updates and continues to update every second the timer text
@@ -61,16 +87,21 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
          */
         fun updateTimerText(){
             viewHolder.timerTextView.postDelayed(Runnable {
-                val quitStartTime = quitList[position].getCalendar()
-                val elapsed = timeElapsed(quitStartTime) // Array of time elapsed
-                var elapsedText = getDisplayFormat(elapsed)
+
+                try {
+
+                    val quitStartTime = quitList[position].getCalendar()
+                    val elapsed = timeElapsed(quitStartTime) // Array of time elapsed
+                    var elapsedText = getDisplayFormat(elapsed)
 
 
-                //elapsedText = "${elapsed[0]} y, ${elapsed[1]} m, ${elapsed[2]} d, ${elapsed[3]}:${elapsed[4]}:${elapsed[5]}"
 
-                viewHolder.timerTextView.text = elapsedText
+                    viewHolder.timerTextView.text = elapsedText
 
-                updateTimerText()
+                    updateTimerText()
+                } catch(e: IndexOutOfBoundsException){
+                    Log.d("RecyclerView", "updateTimerText: Item removed")
+                }
 
 
             }, 1000)
@@ -82,6 +113,91 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
 
     }
 
+    /**
+     * Handles the popup menu displayed when long clicking on a quit in the RecyclerView
+     *
+     * Args: viewHolder: ViewHolder, position: Int
+     * Return: Boolean
+     */
+    private fun handlePopupMenu(viewHolder: ViewHolder, position: Int): Boolean {
+        // creates the popup menu
+        val popup = PopupMenu(viewHolder.itemView.context, viewHolder.itemView)
+        popup.inflate(R.menu.quit_drawer_menu)
+
+        popup.setOnMenuItemClickListener { item -> // sets the listener for each menu item
+            Log.d("RecyclerView", "Menu Item Clicked!")
+
+            when (item.itemId) { // gets the specific button pressed
+
+                // On clicking the delete button
+                R.id.quit_drawer_delete -> {
+                    Log.d("RecyclerView", "Delete!")
+
+                    // Builds an alert dialog confirming
+                    val alertBuilder = AlertDialog.Builder(viewHolder.itemView.context)
+                    alertBuilder.setMessage("Are you sure you want to delete?")
+                    alertBuilder.setPositiveButton("Yes") { dialog, _ ->
+
+                        // Handels deleting the item from the user and recycler view
+                        val itemToRemove = user.getQuitList()[position]
+                        user.removeQuit(itemToRemove)
+                        this.notifyItemRemoved(position)
+                        this.notifyItemRangeChanged(position, user.getQuitList().size - position)
+                        this.notifyDataSetChanged()
+
+                        dialog.dismiss()
+                    }
+                    alertBuilder.setNegativeButton("No") { dialog, _ ->
+                        dialog.cancel()
+                    }
+
+                    alertBuilder.create().show() // shows the alert dialog
+
+                }
+
+                R.id.quit_drawer_relapsed -> {
+
+                    // Builds an alert dialog confirming
+                    val alertBuilder = AlertDialog.Builder(viewHolder.itemView.context)
+                    alertBuilder.setMessage("Are you sure you want to reset the timer?")
+                    alertBuilder.setPositiveButton("Yes") { dialog, _ ->
+
+                        // handles relapsing the quit
+                        val itemToRelapse = user.getQuitList()[position]
+                        itemToRelapse.relapse()
+
+                        dialog.dismiss()
+                    }
+                    alertBuilder.setNegativeButton("No") { dialog, _ ->
+                        dialog.cancel()
+                    }
+
+                    alertBuilder.create().show() // shows the alert dialog
+
+
+
+                }
+
+                R.id.quit_drawer_edit -> {
+                    //TODO: Implement an edit feature, or remove button. Could reuse the AddQuitFragment
+                }
+
+            }
+
+
+            true
+        }
+        popup.gravity = Gravity.RIGHT // Makes the popup menu appear on the right of the screen
+        popup.show()
+        return true // for the lambda expression
+    }
+
+    /**
+     * Formats the string for the timer text from an array of ints
+     *
+     * Args: elapsed: Array(6)<Int>[years, months, days, hours, minutes, seconds]
+     * Return: String
+     */
     private fun getDisplayFormat(elapsed: Array<Int>): String {
         var elapsedText = ""
         if ((elapsed[0] != 0)) {
@@ -122,16 +238,16 @@ class QuitRecyclerViewAdapter(private val quitList: ArrayList<Quit>):
         var delta:Int = currentTime - sinceTime
 
         Log.d("UpdateTime", "Delta: $delta")
-        Log.d("UpdateTime", "Current Time: $currentTime")
-        Log.d("UpdateTime", "Quit Time: $sinceTime")
+        //Log.d("UpdateTime", "Current Time: $currentTime")
+        //Log.d("UpdateTime", "Quit Time: $sinceTime")
 
         var remainder:Int = delta % (365*24*60*60) // gets the remainder of seconds mod a year (365days)
         val years:Int = (delta - remainder) / (365*24*60*60) // calcs total years (should always be whole)
         delta = remainder // updates delta
 
-        Log.d("UpdateTime", "Year Delta: $remainder")
-        Log.d("UpdateTime", "Year Remainder: $remainder")
-        Log.d("UpdateTime", "Years: $years")
+        //Log.d("UpdateTime", "Year Delta: $remainder")
+        //Log.d("UpdateTime", "Year Remainder: $remainder")
+        //Log.d("UpdateTime", "Years: $years")
 
 
         // This just coverts the difference in seconds into years, months, days, hours, minutes, seconds
