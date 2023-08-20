@@ -47,6 +47,7 @@ class QuitFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View {
 
+
         // mainViewModel for communicating with MainActivity
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
@@ -60,7 +61,6 @@ class QuitFragment : Fragment(){
         //Log.d("ViewModel", "User in Quit Frag: ${user.getUsername()}")
 
 
-        var quitList: ArrayList<Quit> = ArrayList()
         val cal = Calendar.getInstance()
         cal.set(2019,4,29, 0, 0, 0)
         //user.addQuit(Quit("smoking",cal)) // this one will not be reset as a hard date is given
@@ -74,9 +74,10 @@ class QuitFragment : Fragment(){
         // Recycler View Code //
         val recyclerView = binding.recyclerviewQuit
         recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = QuitRecyclerViewAdapter(user.getQuitList(), user)//, this)
+        adapter = QuitRecyclerViewAdapter(user.getQuitList(), user)
 
         recyclerView.adapter = adapter
+
 
 
 
