@@ -53,10 +53,13 @@ class AddQuitFragment : DialogFragment(), DatePickerDialog.OnDateSetListener, Ti
         val dateTimeBtn: Button = binding.newQuitStartDateButton
         var startDateText: TextView = binding.newQuitStartDateText
 
-        var calendar: Calendar = Calendar.getInstance()
-        var year = calendar.get(Calendar.YEAR)
-        var month = calendar.get(Calendar.MONTH)
-        var day = calendar.get(Calendar.DAY_OF_MONTH)
+        // This will be the Calendar used to construct the newQuit
+        var startCalendar: Calendar = Calendar.getInstance()
+        // This will be the String used to construct the newQuit
+        var quitTitle: String = ""
+
+
+
 
 
 
@@ -65,12 +68,23 @@ class AddQuitFragment : DialogFragment(), DatePickerDialog.OnDateSetListener, Ti
 
             Log.d("AddQuitFrag", "dateTimeBtn clicked!")
 
+            // Date picker variables
+            var calendar: Calendar = Calendar.getInstance()
+            var year = calendar.get(Calendar.YEAR)
+            var month = calendar.get(Calendar.MONTH)
+            var day = calendar.get(Calendar.DAY_OF_MONTH)
+
 
             var datePickerDialog: DatePickerDialog = DatePickerDialog(requireActivity(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
 
-                Toast.makeText(requireActivity(), """$dayOfMonth - ${monthOfYear + 1} - $year""", Toast.LENGTH_LONG).show()
-
+                // updates text in fragment to represent selected Date
                 startDateText.text = "$dayOfMonth/${monthOfYear + 1}/$year"
+
+                // updates startCalendar to selected Date, time will be set elsewhere
+                startCalendar.set(year, monthOfYear,dayOfMonth)
+
+                Log.d("AddQuitFrag", "datePickerDialog Date: ${startCalendar.get(Calendar.DAY_OF_MONTH)}/${startCalendar.get(Calendar.MONTH)+1}/${startCalendar.get(Calendar.YEAR)}")
+
 
             }, year, month, day)
 
@@ -79,7 +93,6 @@ class AddQuitFragment : DialogFragment(), DatePickerDialog.OnDateSetListener, Ti
 
         }
 
-        Log.d("AddQuitFrag", "datePickerDialog Date: $year$month$day")
 
 
 
