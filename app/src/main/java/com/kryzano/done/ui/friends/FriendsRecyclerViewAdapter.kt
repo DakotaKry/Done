@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.findFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.kryzano.done.Quit
@@ -12,6 +13,8 @@ import com.example.done.R
 import com.kryzano.done.MainActivity
 import com.kryzano.done.MainViewModel
 import com.kryzano.done.User
+import com.kryzano.done.ui.friends.FriendViewFragment
+import com.kryzano.done.ui.friends.FriendsFragment
 
 class FriendsRecyclerViewAdapter(private val friendList: ArrayList<String>, private val user: User):
     RecyclerView.Adapter<FriendsRecyclerViewAdapter.ViewHolder>(){
@@ -57,8 +60,19 @@ class FriendsRecyclerViewAdapter(private val friendList: ArrayList<String>, priv
             // TODO: launch friend view fragment
 
             val context = (viewHolder.itemView.context as MainActivity)
+            val fcontext = viewHolder.itemView.findFragment<FriendsFragment>()
+            fcontext.getFab().hide()
+
+            //val fcontext = viewHolder.itemView.findFragment<>()
             mainViewModel = ViewModelProvider(context)[MainViewModel::class.java]
             mainViewModel.setFriendView(user.getFriends()[position])
+
+
+            context.supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_fragment_friends, FriendViewFragment())
+                .addToBackStack(null).commit()
+
+
             // Show Add Quit popup fragment
             //FriendsViewFragment().show(context.supportFragmentManager, null)
 

@@ -2,26 +2,24 @@ package com.kryzano.done.ui.friends
 
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.done.databinding.FragmentFriendsBinding
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.kryzano.done.Auth
 import com.kryzano.done.Database
 import com.kryzano.done.MainViewModel
 import com.kryzano.done.User
+import com.kryzano.done.ui.quit.AddQuitFragment
 import com.kryzano.done.ui.quit.FriendsRecyclerViewAdapter
-import com.kryzano.done.ui.quit.QuitRecyclerViewAdapter
 
 class FriendsFragment : Fragment() {
 
@@ -38,6 +36,8 @@ class FriendsFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var user: User
     private lateinit var adapter: FriendsRecyclerViewAdapter
+    private lateinit var addFriendButton: FloatingActionButton
+
 
 
     // This property is only valid between onCreateView and
@@ -76,6 +76,19 @@ class FriendsFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
+        // On click listener for the add new quit button
+        addFriendButton = binding.newButtonFriends
+        addFriendButton.setOnClickListener {
+            Log.d("QuitFrag", "addQuitButton Clicked!")
+
+        }
+
+        if (FriendViewFragment().isVisible){
+            addFriendButton.hide()
+        } else {
+            addFriendButton.show()
+        }
+
 
 
 
@@ -111,5 +124,9 @@ class FriendsFragment : Fragment() {
             // failed
         }
 
+    }
+
+    fun getFab(): FloatingActionButton {
+        return this.addFriendButton
     }
 }
