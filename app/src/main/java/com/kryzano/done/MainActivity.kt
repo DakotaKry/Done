@@ -1,4 +1,4 @@
-package com.example.done
+package com.kryzano.done
 
 import android.os.Bundle
 import android.util.Log
@@ -14,8 +14,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.done.R
 import com.example.done.databinding.ActivityMainBinding
-import com.example.done.ui.quit.QuitViewModel
+import com.kryzano.done.ui.quit.QuitViewModel
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,6 +60,17 @@ class MainActivity : AppCompatActivity() {
             }
             Log.d("LiveData","freezeNav observed!")
         })
+
+
+        // Database testing TODO: Remove
+        var testUser: User = User("test@test.com", "dummyTestUser")
+        testUser.addQuit(Quit("testQuit", Calendar.getInstance()))
+        val db: Database = Database()
+        db.createNewUser(testUser)
+        val quitList = db.getQuits("test@test.com")
+        Log.d("Test","$quitList")
+
+
 
 
 
