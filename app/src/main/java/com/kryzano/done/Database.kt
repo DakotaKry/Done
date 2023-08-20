@@ -88,6 +88,8 @@ class Database {
 
     }
 
+    // Todo: use get uid from email instead
+    @Deprecated("use getUidFromEmail with getUsername")
     fun getUsernameFromEmail(email: String): String{
 
         var username = ""
@@ -147,6 +149,33 @@ class Database {
         }
 
     }
+
+    fun getUidFromEmail(email: String): String{
+        var uid = ""
+
+        try {
+
+            val query = fdb.collection("users").whereEqualTo("email", email)
+            val task = query.get()
+
+            while (!task.isComplete){
+                Thread.sleep(10)
+            }
+
+            val result = task.result
+
+            uid = result.documents[0].id
+
+            Log.d("Database", "uid $uid")
+
+
+        } catch (exception: Exception) {
+            Log.e("Database", exception.toString())
+        }
+
+        return uid
+    }
+
 
     /**
      * Gets the quits given a users uid (usually email).
