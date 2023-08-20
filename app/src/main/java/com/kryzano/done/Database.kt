@@ -8,6 +8,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 // TODO: Could make a private attribute uid, instead of always passing it to the method
+
+// Note, Database().getWhatever() halts code execution.
+// And Database().fetchWhatever() provides a callback for asyn calls
 class Database() {
 
     // Gets our Firebase Instance
@@ -62,13 +65,13 @@ class Database() {
         }
 
     }
-    fun getUsername(email: String): String{
+    fun getUsername(uid: String): String{
 
         var username = ""
 
         try {
 
-            val docRef = fdb.collection("users").document("/$email")
+            val docRef = fdb.collection("users").document("/$uid")
             val task = docRef.get()
             while (!task.isComplete){
                 Thread.sleep(100)
@@ -120,6 +123,45 @@ class Database() {
     }
 
     /**
+     * Gets the quits given a users uid (usually email).
+     * Forces halt in code execution until a result is received
+     *
+     * Args: uid: String
+     * Return: None
+     * Result: ArrayList<Quit>
+     */
+    fun getQuits(uid: String):ArrayList<Quit>{
+
+        var quitList: ArrayList<Quit> = ArrayList()
+
+        try{
+            val docRef = fdb.collection("users").document("/$uid").collection("/quits")
+            val task = docRef.get()
+            while (!task.isComplete){
+                Thread.sleep(100)
+            }
+            val result = task.result
+
+            for (document in result) {
+                Log.d("DatabaseFetch","ID: ${document.id}, Data: ${document.data}")
+                val title = document.data["title"].toString() // get the title
+                // get the calendar
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = document.data["time"].toString().toLong()
+                val quit = Quit(title, calendar)
+                Log.d("DatabaseFetch","quit: ${quit.getTitle()}")
+                quitList.add(quit) // add the Quit to list
+
+            }
+
+        } catch (e:Exception){
+            throw e
+        }
+        return quitList
+
+    }
+
+    /**
      * Fetches the friends given a users uid (usually email).
      * method gives a call back for asyn
      * see: https://stackoverflow.com/questions/57330766/why-does-my-function-that-calls-an-api-or-launches-a-coroutine-return-an-empty-o/57330767#57330767
@@ -146,6 +188,40 @@ class Database() {
             callback(friendList)
         }
 
+    }
+    /**
+     * Gets the quits given a users uid (usually email).
+     * Forces halt in code execution until a result is received
+     *
+     * Args: uid: String
+     * Return: None
+     * Result: ArrayList<Quit>
+     */
+    fun getFriends(uid: String):ArrayList<String> {
+
+        var friendList: ArrayList<String> = ArrayList()
+
+        try {
+            val docRef = fdb.collection("users").document("/$uid").collection("/friends")
+            val task = docRef.get()
+            while (!task.isComplete) {
+                Thread.sleep(100)
+            }
+            val result = task.result
+
+            for (document in result) {
+                Log.d("DatabaseFetch", "ID: ${document.id}, Data: ${document.data}")
+                val fuid = document.data["uid"].toString() // get the title
+
+                Log.d("DatabaseFetch", "friend: $fuid")
+                friendList.add(fuid) // add the Quit to list
+
+            }
+
+        } catch (e: Exception) {
+            throw e
+        }
+        return friendList
     }
 
     /**
@@ -175,6 +251,33 @@ class Database() {
             callback(blockList)
         }
 
+    }
+
+    fun getBlocks(uid: String):ArrayList<String> {
+
+        var blockList: ArrayList<String> = ArrayList()
+
+        try {
+            val docRef = fdb.collection("users").document("/$uid").collection("/blocks")
+            val task = docRef.get()
+            while (!task.isComplete) {
+                Thread.sleep(100)
+            }
+            val result = task.result
+
+            for (document in result) {
+                Log.d("DatabaseFetch", "ID: ${document.id}, Data: ${document.data}")
+                val buid = document.data["uid"].toString() // get the title
+
+                Log.d("DatabaseFetch", "friend: $buid")
+                blockList.add(buid) // add the Quit to list
+
+            }
+
+        } catch (e: Exception) {
+            throw e
+        }
+        return blockList
     }
 
     fun addQuit(uid: String, quit: Quit){
