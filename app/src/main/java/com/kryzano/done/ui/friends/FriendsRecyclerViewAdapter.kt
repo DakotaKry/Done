@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.fragment.app.findFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.kryzano.done.Quit
 import com.example.done.R
 import com.kryzano.done.MainActivity
 import com.kryzano.done.MainViewModel
@@ -61,9 +60,8 @@ class FriendsRecyclerViewAdapter(private val friendList: ArrayList<String>, priv
 
             val context = (viewHolder.itemView.context as MainActivity)
             val fcontext = viewHolder.itemView.findFragment<FriendsFragment>()
-            fcontext.getFab().hide()
+            fcontext.hideFAB()
 
-            //val fcontext = viewHolder.itemView.findFragment<>()
             mainViewModel = ViewModelProvider(context)[MainViewModel::class.java]
             mainViewModel.setFriendView(user.getFriends()[position])
 

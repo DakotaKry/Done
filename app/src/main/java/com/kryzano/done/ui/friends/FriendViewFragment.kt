@@ -8,11 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.done.R
 import com.example.done.databinding.FragmentViewFriendBinding
 import com.kryzano.done.Database
 import com.kryzano.done.MainViewModel
-import com.kryzano.done.Quit
 import com.kryzano.done.User
 import com.kryzano.done.ui.quit.FriendsQuitRecyclerViewAdapter
 
@@ -37,7 +35,7 @@ class FriendViewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
@@ -52,16 +50,15 @@ class FriendViewFragment : Fragment() {
         val root = binding.root
        // val root: View = binding.root
 
-        val uid = db.getUidFromEmail(friendView)
-        val friendQuitList = db.getQuits(uid)
+        val friendUid = db.getUidFromEmail(friendView)
+        val friendQuitList = db.getQuits(friendUid)
         Log.d("FriendViewFragment","$friendQuitList")
 
         user = mainViewModel.getUser()
 
-        Log.d("FriendViewFragment","$friendQuitList")
-        Log.d("FriendViewFragment","$friendView")
 
-        binding.friendTitleText.text = db.getUsernameFromEmail(friendView)
+
+        binding.friendTitleText.text = db.getUsername(friendUid)
 
 
         // Recycler View Code //

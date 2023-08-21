@@ -18,7 +18,6 @@ import com.kryzano.done.Auth
 import com.kryzano.done.Database
 import com.kryzano.done.MainViewModel
 import com.kryzano.done.User
-import com.kryzano.done.ui.quit.AddQuitFragment
 import com.kryzano.done.ui.quit.FriendsRecyclerViewAdapter
 
 class FriendsFragment : Fragment() {
@@ -27,6 +26,7 @@ class FriendsFragment : Fragment() {
 
     // Authentication Attributes //
 
+    // Sign In Launcher
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract(),
     ) { result ->
@@ -37,11 +37,8 @@ class FriendsFragment : Fragment() {
     private lateinit var user: User
     private lateinit var adapter: FriendsRecyclerViewAdapter
     private lateinit var addFriendButton: FloatingActionButton
+    private val db = Database()
 
-
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -49,9 +46,9 @@ class FriendsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val friendsViewModel =
-            ViewModelProvider(this)[FriendsViewModel::class.java]
 
+
+        // Set Up // Order Matters
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         user = mainViewModel.getUser()
 
@@ -60,37 +57,43 @@ class FriendsFragment : Fragment() {
 
         Auth(mainViewModel).checkAuth(signInLauncher)
 
+        // End Setup //
+
 
         // Recycler View Code //
-        var friendsDisplayName = ArrayList<String>()
+
+        val friendsDisplayName = ArrayList<String>()
         for (friendEmail in user.getFriends()) {
-            val friend = Database().getUsernameFromEmail(friendEmail)
+            val friendUid = db.getUidFromEmail(friendEmail)
+            val friend = db.getUsername(friendUid)
             friendsDisplayName.add(friend)
             Log.v("FriendsFragment","friend: $friend")
         }
-        Log.d("FriendsFragment", "friends displayname $friendsDisplayName")
+
         val recyclerView = binding.recyclerviewFriends
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = FriendsRecyclerViewAdapter(friendsDisplayName, user)
-
         recyclerView.adapter = adapter
+
+        // End Recycler View Code //
+
+        // Floating Action Button Code //
+
 
 
         // On click listener for the add new quit button
         addFriendButton = binding.newButtonFriends
-        addFriendButton.setOnClickListener {
-            Log.d("QuitFrag", "addQuitButton Clicked!")
 
-        }
-
-        if (FriendViewFragment().isVisible){
-            addFriendButton.hide()
-        } else {
+        // Shows Floating Action Button if Fragment is not inflated onto
+        if (!FriendViewFragment().isVisible){
             addFriendButton.show()
         }
 
+        addFriendButton.setOnClickListener {
+            // TODO
+        }
 
-
+        // End Floating Action Button Code //
 
 
         return root
@@ -126,7 +129,13 @@ class FriendsFragment : Fragment() {
 
     }
 
-    fun getFab(): FloatingActionButton {
-        return this.addFriendButton
+    /**
+     * Hides the Floating Action Button in FriendsFragment
+     *
+     * Args: None
+     * Returns: None
+     */
+    fun hideFAB() {
+        this.addFriendButton.hide()
     }
 }

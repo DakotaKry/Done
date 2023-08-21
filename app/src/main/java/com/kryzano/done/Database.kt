@@ -29,6 +29,11 @@ class Database {
 
     }
 
+    /**
+     * Pushed a new email to the Firestore given a uid
+     *
+     * Args: uid:String, email:String
+     */
     fun pushEmail(uid: String, email: String){
         Log.d("DatabasePush","pushed email")
 
@@ -64,6 +69,13 @@ class Database {
         }
 
     }
+
+    /**
+     * Gets username given a uid
+     *
+     * Args: uid:String
+     * Returns: String
+     */
     fun getUsername(uid: String): String{
 
         var username = ""
@@ -84,34 +96,6 @@ class Database {
         }
 
         Log.d("DatabaseFetch","returned: $username")
-        return username
-
-    }
-
-    // Todo: use get uid from email instead
-    @Deprecated("use getUidFromEmail with getUsername")
-    fun getUsernameFromEmail(email: String): String{
-
-        var username = ""
-
-        try {
-
-            val query = fdb.collection("users").whereEqualTo("email", email)
-            val task = query.get()
-
-            while (!task.isComplete){
-                Thread.sleep(10)
-            }
-
-            val result2 = task.result
-
-            username = result2.documents[0].data!!["username"] as String
-
-
-        } catch (exception: Exception) {
-            Log.e("Database", exception.toString())
-        }
-
         return username
 
     }
@@ -150,6 +134,12 @@ class Database {
 
     }
 
+    /**
+     * Gets a uid given an email
+     *
+     * Args: email:String
+     * Returns: String
+     */
     fun getUidFromEmail(email: String): String{
         var uid = ""
 
@@ -308,6 +298,12 @@ class Database {
 
     }
 
+    /**
+     * Gets blocks given a uid
+     *
+     * Args: uid:String
+     * Returns: ArrayList<String>
+     */
     fun getBlocks(uid: String):ArrayList<String> {
 
         val blockList: ArrayList<String> = ArrayList()
@@ -335,6 +331,12 @@ class Database {
         return blockList
     }
 
+    /**
+     * Adds a quit to Firestore given a uid
+     *
+     * Args: uid:String, quit:Quit
+     * Returns: None
+     */
     fun addQuit(uid: String, quit: Quit){
 
         val quitData = hashMapOf(
@@ -349,6 +351,12 @@ class Database {
 
     }
 
+    /**
+     * Removes a quit from Firestore given a uid
+     *
+     * Args: uid:String, quit:Quit
+     * Returns: None
+     */
     fun removeQuit(uid: String, quit: Quit){
 
         fdbUsers.document("/$uid").collection("/quits")
@@ -357,6 +365,12 @@ class Database {
 
     }
 
+    /**
+     * Adds a friend to Firestore given a uid
+     *
+     * Args: uid:String, friend:String
+     * Returns: None
+     */
     fun addFriend(uid: String, friend: String){
 
         // TODO: Add checking that they exist
@@ -370,6 +384,12 @@ class Database {
 
     }
 
+    /**
+     * Removes a friend from Firestore given a uid
+     *
+     * Args: uid:String, friend:String
+     * Returns: None
+     */
     fun removeFriend(uid: String, friend: String){
 
         fdbUsers.document("/$uid").collection("/friends")
@@ -378,6 +398,12 @@ class Database {
 
     }
 
+    /**
+     * Adds a block to Firestore given a uid
+     *
+     * Args: uid:String, block:String
+     * Returns: None
+     */
     fun addBlock(uid: String, block: String){
 
         // TODO: Add checking that they exist
@@ -391,6 +417,12 @@ class Database {
 
     }
 
+    /**
+     * removes a block from Firestore given a uid
+     *
+     * Args: uid:String, block:String
+     * Returns: None
+     */
     fun removeBlock(uid: String, block: String){
 
         fdbUsers.document("/$uid").collection("/blocks")
@@ -399,6 +431,11 @@ class Database {
 
     }
 
+    /** removes a user from Firestore given their uid
+     *
+     * Args: uid:String
+     * Returns: None
+     */
     fun removeUser(uid: String){
         fdbUsers.document("/$uid").delete()
     }

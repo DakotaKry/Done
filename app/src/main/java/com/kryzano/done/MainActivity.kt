@@ -70,6 +70,23 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
+        this.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+
+            override fun handleOnBackPressed() {
+                Log.d("BackPressed", "backstack count: ${supportFragmentManager.backStackEntryCount}")
+                if (supportFragmentManager.backStackEntryCount  < 1){
+                    navController.popBackStack()
+                } else {
+
+                        supportFragmentManager.popBackStack("additional_frag",
+                            FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+
+                }
+            }
+
+        })
+
     }
 
 
