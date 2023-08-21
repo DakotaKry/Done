@@ -70,13 +70,7 @@ class FriendsRecyclerViewAdapter(private val friendList: ArrayList<String>, priv
 
             context.supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_fragment_friends, FriendViewFragment())
-                .addToBackStack(null).commit()
-
-
-            // Show Add Quit popup fragment
-            //FriendsViewFragment().show(context.supportFragmentManager, null)
-
-
+                .addToBackStack("additional_frag").commit()
 
             true
 
